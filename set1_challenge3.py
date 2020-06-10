@@ -9,10 +9,12 @@ CHARACTER_FREQ = {
 }
 
 def singlechar_xor(input_bytes, byte_candidate):
-    output = [input_byte ^ byte_candidate for input_byte in input_bytes]
+    output = [b ^ byte_candidate for b in input_bytes]
 
     return bytearray(output)
 
+
+# ToDo Implement this a map reduce
 def calculate_english_score(bytes):
     score = 0
     for b in bytes:
@@ -21,22 +23,36 @@ def calculate_english_score(bytes):
     return score
 
 
+class Result:
+    score = 0
+    text = ''
+    byte = b''
+
+    def is_able_to_decode_text(self, text):
+        try:
+            text.decode()
+            return True
+        except:
+            return False
+
+    def update(self, in_score, in_text, in_byte):
+        if not self.is_able_to_decode_text(in_text):
+            return
+
+        self.score = in_score
+        self.text = in_text.decode()
+        self.byte = in_byte
+
 def single_byte_xor_cipher(cipher_text):
     cipher_b16 = codecs.decode(cipher_text, 'hex')
 
-    result = {
-        'score' : 0,
-        'text'  : "",
-        'byte'  : b''}
+    result = Result()
 
     for byte_candidate in range(0x00,0xff):
         plaintext = singlechar_xor(cipher_b16, byte_candidate)
         score = calculate_english_score(plaintext)
 
-        if score > result['score']:
-            result['score'] = score
-            result['text'] = plaintext
-            result['byte'] = byte_candidate
+        if score > result.score:
+            result.update(score, plaintext, byte_candidate)
 
-    result['text'] = result['text'].decode()
     return result

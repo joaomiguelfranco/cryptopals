@@ -1,4 +1,6 @@
 import unittest
+import os
+
 from set1_challenge1 import convert_hex_to_base64
 from set1_challenge2 import \
     fixed_xor_mine,\
@@ -7,6 +9,8 @@ from set1_challenge2 import \
 from set1_challenge3 import \
     single_byte_xor_cipher, \
     calculate_english_score
+
+from set1_challenge4 import detect_single_char_xor
 
 class Test_Set1(unittest.TestCase):
     def test_convert_hex_to_base64_long_string(self):
@@ -75,13 +79,29 @@ class Test_Set1(unittest.TestCase):
         result = single_byte_xor_cipher(cipher)
 
         self.assertEqual(expected_byte,
-                         result['byte'])
+                         result.byte)
         self.assertEqual(expected_text,
-                         result['text'])
+                         result.text)
 
-    def test_detect_singlechar_xor(self):
-        file = 'data/'
+    def test_detect_singlechar_xor_challenge4_file(self):
+        filepath = os.path.join(os.getcwd(),'data','challenge4.txt')
+        expected_byte = 53
+        expected_text = "Now that the party is jumping\n"
 
+        result = detect_single_char_xor(filepath)
+
+        self.assertEqual(expected_text,
+                         result.text)
+
+        self.assertEqual(expected_byte,
+                         result.byte)
+
+
+    def test_detect_singlechar_xor_file_nok(self):
+        filepath = os.path.join(os.getcwd(),'some_dir_that_doesnt_exist','filename_nok')
+        self.assertRaises(AssertionError,
+                          detect_single_char_xor,
+                          filepath)
 
 if __name__ == '__main__':
     unittest.main()
