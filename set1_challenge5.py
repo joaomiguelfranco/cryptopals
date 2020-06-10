@@ -1,27 +1,25 @@
 import codecs
 
-def build_cipher_list(cipher, text_len):
-    if len(cipher) > text_len: return cipher[0:text_len]
+class Repeating_Cipher:
+    def __init__(self, cipher):
+        self.cipher = bytearray(cipher, 'utf8')
+        self.count = 0
 
-    cipher_list = cipher * (text_len // len(cipher))
+    def get_cipher_byte(self):
+        index = self.count % len(self.cipher)
+        output = self.cipher[index]
+        self.count += 1
 
-    cipher_list += cipher[0:text_len - len(cipher_list)]
-
-    return cipher_list
-
-def get_bytes_to_cipher(cipher, text_len):
-    return bytearray(
-            build_cipher_list(cipher,text_len),
-            'utf8')
+        return output
 
 
 def cipher_repeating_xor(text_to_cipher, cipher):
     bytes_to_cipher = bytearray(text_to_cipher, 'utf8')
-    cipher = get_bytes_to_cipher(cipher, len(text_to_cipher))
+    cipher = Repeating_Cipher(cipher)
 
-    xor_func = lambda x,y : x ^ y
+    xor_func = lambda x : x ^ cipher.get_cipher_byte()
 
-    ciphered_list = (list(map(xor_func, bytes_to_cipher, cipher)))
+    ciphered_list = list(map(xor_func, bytes_to_cipher))
     ciphered_bytes = bytearray(ciphered_list)
 
     ciphered_hex = codecs.encode(ciphered_bytes, 'hex')

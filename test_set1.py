@@ -12,7 +12,7 @@ from set1_challenge3 import \
 from set1_challenge4 import detect_single_char_xor
 from set1_challenge5 import \
     cipher_repeating_xor, \
-    build_cipher_list
+    Repeating_Cipher
 
 
 class Test_Set1(unittest.TestCase):
@@ -117,35 +117,13 @@ class Test_Set1(unittest.TestCase):
         self.assertEqual(expected_result,
                          result)
 
-    def test_build_cipher_list_with_rest_one(self):
-        cipher = 'ICE'
-        text_len = 7
-        expected_output = 'ICEICEI'
+    def test_repeating_cipher(self):
+        cipher = Repeating_Cipher('ICE')
+        expected_bytes = bytearray('ICEIC','utf8')
 
-        output = build_cipher_list(cipher, text_len)
-
-        self.assertEqual(expected_output,
-                         output)
-
-    def test_build_cipher_list_with_rest_zero(self):
-        cipher = 'ICE'
-        text_len = 6
-        expected_output = 'ICEICE'
-
-        output = build_cipher_list(cipher, text_len)
-
-        self.assertEqual(expected_output,
-                         output)
-
-    def test_build_cipher_list_with_the_smaller_size(self):
-        cipher = 'ICEICE'
-        text_len = 3
-        expected_output = 'ICE'
-
-        output = build_cipher_list(cipher, text_len)
-
-        self.assertEqual(expected_output,
-                         output)
+        for byte in expected_bytes:
+            self.assertEqual(byte,
+                             cipher.get_cipher_byte())
 
 if __name__ == '__main__':
     unittest.main()
