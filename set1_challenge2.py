@@ -1,13 +1,13 @@
 import codecs
+from functools import reduce
 
 def xor_two_lists(l1, l2):
     assert len(l1) == len(l2)
 
-    result = bytearray()
-    for byte1, byte2 in zip(l1, l2):
-        result.append(byte1 ^ byte2)
+    xor_func = lambda x,y : x ^ y
+    result = list(map(xor_func, l1, l2))
 
-    return result
+    return bytearray(result)
 
 def fixed_xor_mine(hex_input, xor_against):
     b16_1 = codecs.decode(hex_input, 'hex')

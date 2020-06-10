@@ -1,4 +1,5 @@
 import codecs
+from functools import reduce
 
 # http://www.data-compression.com/english.html
 CHARACTER_FREQ = {
@@ -10,17 +11,12 @@ CHARACTER_FREQ = {
 
 def singlechar_xor(input_bytes, byte_candidate):
     output = [b ^ byte_candidate for b in input_bytes]
-
     return bytearray(output)
 
-
-# ToDo Implement this a map reduce
 def calculate_english_score(bytes):
-    score = 0
-    for b in bytes:
-        score += CHARACTER_FREQ.get(chr(b),0)
-
-    return score
+    calculate_score_func = lambda x : CHARACTER_FREQ.get(chr(x),0)
+    scores = list(map(calculate_score_func, bytes))
+    return reduce(lambda x,y : x+y, scores)
 
 
 class Result:
@@ -28,16 +24,13 @@ class Result:
     text = ''
     byte = b''
 
-    def is_able_to_decode_text(self, text):
-        try:
-            text.decode()
-            return True
-        except:
-            return False
+    def able_to_decode_text(self, text):
+        try: text.decode()
+        except: return False
+        return True
 
     def update(self, in_score, in_text, in_byte):
-        if not self.is_able_to_decode_text(in_text):
-            return
+        if not self.able_to_decode_text(in_text): return
 
         self.score = in_score
         self.text = in_text.decode()
