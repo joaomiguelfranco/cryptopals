@@ -9,8 +9,11 @@ from set1_challenge2 import \
 from set1_challenge3 import \
     single_byte_xor_cipher, \
     calculate_english_score
-
 from set1_challenge4 import detect_single_char_xor
+from set1_challenge5 import \
+    cipher_repeating_xor, \
+    build_cipher_list
+
 
 class Test_Set1(unittest.TestCase):
     def test_convert_hex_to_base64_long_string(self):
@@ -102,6 +105,47 @@ class Test_Set1(unittest.TestCase):
         self.assertRaises(AssertionError,
                           detect_single_char_xor,
                           filepath)
+
+    def test_chipher_repeating_xor(self):
+        text_to_cipher = "Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal"
+        cipher = 'ICE'
+
+        expected_result = "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f"
+
+        result = cipher_repeating_xor(text_to_cipher, cipher)
+
+        self.assertEqual(expected_result,
+                         result)
+
+    def test_build_cipher_list_with_rest_one(self):
+        cipher = 'ICE'
+        text_len = 7
+        expected_output = 'ICEICEI'
+
+        output = build_cipher_list(cipher, text_len)
+
+        self.assertEqual(expected_output,
+                         output)
+
+    def test_build_cipher_list_with_rest_zero(self):
+        cipher = 'ICE'
+        text_len = 6
+        expected_output = 'ICEICE'
+
+        output = build_cipher_list(cipher, text_len)
+
+        self.assertEqual(expected_output,
+                         output)
+
+    def test_build_cipher_list_with_the_smaller_size(self):
+        cipher = 'ICEICE'
+        text_len = 3
+        expected_output = 'ICE'
+
+        output = build_cipher_list(cipher, text_len)
+
+        self.assertEqual(expected_output,
+                         output)
 
 if __name__ == '__main__':
     unittest.main()
